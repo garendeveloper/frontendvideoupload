@@ -1,0 +1,23 @@
+.videoSize {
+    width: 100%;
+}
+.card{
+    width: 70%;
+}
+video {
+    width: 100%;
+}
+
+input[type=file] {
+    margin: 0 auto;
+    width: 500px;
+}
+
+body {
+    font-family: 'Segoe UI';
+    background-color: blueviolet;
+}
+
+button {
+    font-weight: 400;
+}
