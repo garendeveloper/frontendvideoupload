@@ -101,6 +101,11 @@
             $('.progress').hide();
             $('.progress-bar').hide();
             $('.progress-bar').css('width', '0%').attr('aria-valuenow', 0).text('0%');
+
+            var newSource = "https://cdn.bitdegree.org/learn/Pexels%20Videos%203373.mp4?raw=true";
+            $('#videoPreview').attr('src', newSource);
+            $('video').get(0).load();
+            $("#btn_submitVideo").removeClass('disabled');
         }
         function uploadChunks(file, fileName, fileSize, chunkSize, start, index) {
             let end = Math.min(start + chunkSize, fileSize);
@@ -127,24 +132,16 @@
                     return xhr;
                 },
                 success: function (data) {
-                    if(data.status === 400){
-                        alert(data.message);
-                        resetFields();
-                        return;
-                    }
-                    else
-                    {
-                        start = end;
-                        index++;
+                    start = end;
+                    index++;
 
-                        if (start < fileSize) {
-                            uploadChunks(file, fileName, fileSize, chunkSize, start, index);
-                        } else {
-                            resetFields();
-                            completeUpload(fileName);
-                        }
+                    if (start < fileSize) {
+                        $("#btn_submitVideo").addClass('disabled');
+                        uploadChunks(file, fileName, fileSize, chunkSize, start, index);
+                    } else {
+                        resetFields();
+                        completeUpload(fileName);
                     }
-                    
                 },
                 error: function (error) {
                     alert("Something went wrong!") ;
