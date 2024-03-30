@@ -95,7 +95,13 @@
                 uploadChunks(file, fileName, fileSize, chunkSize, start, index);
             });
         });
-
+        function resetFields()
+        {
+            $('#fileInput').val("");
+            $('.progress').hide();
+            $('.progress-bar').hide();
+            $('.progress-bar').css('width', '0%').attr('aria-valuenow', 0).text('0%');
+        }
         function uploadChunks(file, fileName, fileSize, chunkSize, start, index) {
             let end = Math.min(start + chunkSize, fileSize);
             let chunk = file.slice(start, end);
@@ -121,22 +127,29 @@
                     return xhr;
                 },
                 success: function (data) {
-                    start = end;
-                    index++;
-
-                    if (start < fileSize) {
-                        uploadChunks(file, fileName, fileSize, chunkSize, start, index);
-                    } else {
-                        $('.progress').hide();
-                        $('.progress-bar').hide();
-                        $('.progress-bar').css('width', '0%').attr('aria-valuenow', 0).text('0%');
-                        completeUpload(fileName);
+                    if(data.status === 400){
+                        alert(data.message);
+                        resetFields();
+                        return;
                     }
+                    else
+                    {
+                        start = end;
+                        index++;
+
+                        if (start < fileSize) {
+                            uploadChunks(file, fileName, fileSize, chunkSize, start, index);
+                        } else {
+                            resetFields();
+                            completeUpload(fileName);
+                        }
+                    }
+                    
                 },
                 error: function (error) {
+                    alert("Something went wrong!") ;
                     console.error('Error uploading chunk:', error);
-                    $('.progress').hide();
-                    $(".progress-bar").hide();
+                    resetFields();
                 }
             });
         }
@@ -148,7 +161,7 @@
                     method: 'POST',
                     data: { fileName: fileName },
                     success: function (data) {
-                        alert(data.message);
+                        alert(data.message+"\n"+"Path: "+data.path);
                     }
                 });
                 console.log('Video upload completed!');
